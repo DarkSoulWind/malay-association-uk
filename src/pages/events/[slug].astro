@@ -32,12 +32,58 @@ const dateFormatter = new Intl.DateTimeFormat("en-GB", {
 
 const displayDate = post.data.eventDate ?? post.data.publishedDate;
 const dateLabel = dateFormatter.format(displayDate);
+const siteUrl = (Astro.site ?? new URL("https://malayassociation.co.uk")).toString().replace(/\/$/, "");
+const pageUrl = `${siteUrl}${Astro.url.pathname}`;
+const confirmedText = (value?: string) => Boolean(value && !/to be verified/i.test(value));
+const schemaDate = (date: Date, time?: string) => {
+  const datePart = date.toISOString().slice(0, 10);
+
+  if (time && /^\d{1,2}:\d{2}$/.test(time)) {
+    return `${datePart}T${time.padStart(5, "0")}:00+00:00`;
+  }
+
+  return datePart;
+};
+const confirmedVenue = confirmedText(post.data.venue) ? post.data.venue : undefined;
+const eventJsonLd = post.data.eventDate && confirmedVenue
+  ? {
+      "@context": "https://schema.org",
+      "@type": "Event",
+      "@id": `${pageUrl}#event`,
+      name: post.data.title,
+      description: post.data.excerpt,
+      url: pageUrl,
+      image: [new URL(post.data.featuredImage, `${siteUrl}/`).toString()],
+      startDate: schemaDate(post.data.eventDate, post.data.eventStartTime),
+      ...(post.data.eventEndTime && /^\d{1,2}:\d{2}$/.test(post.data.eventEndTime)
+        ? { endDate: schemaDate(post.data.eventDate, post.data.eventEndTime) }
+        : {}),
+      eventStatus: post.data.isPastEvent
+        ? "https://schema.org/EventCompleted"
+        : "https://schema.org/EventScheduled",
+      eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+      location: {
+        "@type": "Place",
+        name: confirmedVenue,
+        address: {
+          "@type": "PostalAddress",
+          addressCountry: "GB"
+        }
+      },
+      organizer: {
+        "@type": "Organization",
+        name: "Malay Association UK",
+        url: `${siteUrl}/`
+      }
+    }
+  : undefined;
 ---
 
 <BaseLayout
   title={post.data.title}
   description={post.data.excerpt}
   image={post.data.featuredImage}
+  structuredData={eventJsonLd}
   type="article"
 >
   <article class="article-shell">

@@ -33,12 +33,36 @@ const dateFormatter = new Intl.DateTimeFormat("en-GB", {
 const displayDate = post.data.eventDate ?? post.data.publishedDate;
 const dateLabel = dateFormatter.format(displayDate);
 const hasEventDetails = post.data.eventDate || post.data.venue || post.data.eventStartTime || post.data.entryFee;
+const siteUrl = (Astro.site ?? new URL("https://malayassociation.co.uk")).toString().replace(/\/$/, "");
+const pageUrl = `${siteUrl}${Astro.url.pathname}`;
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "@id": `${pageUrl}#article`,
+  headline: post.data.title,
+  description: post.data.excerpt,
+  image: [new URL(post.data.featuredImage, `${siteUrl}/`).toString()],
+  datePublished: post.data.publishedDate.toISOString(),
+  dateModified: post.data.publishedDate.toISOString(),
+  mainEntityOfPage: pageUrl,
+  author: {
+    "@type": "Organization",
+    name: "Malay Association UK",
+    url: `${siteUrl}/`
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "Malay Association UK",
+    url: `${siteUrl}/`
+  }
+};
 ---
 
 <BaseLayout
   title={post.data.title}
   description={post.data.excerpt}
   image={post.data.featuredImage}
+  structuredData={articleJsonLd}
   type="article"
 >
   <article class="article-shell">

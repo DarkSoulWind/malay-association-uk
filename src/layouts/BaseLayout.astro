@@ -8,6 +8,7 @@ interface Props {
   title: string;
   description: string;
   image?: string;
+  structuredData?: Record<string, unknown> | Record<string, unknown>[];
   type?: "website" | "article";
 }
 
@@ -15,13 +16,19 @@ const {
   title,
   description,
   image = "/assets/hero-community.jpg",
+  structuredData,
   type = "website"
 } = Astro.props;
 
-const canonical = new URL(Astro.url.pathname, Astro.site ?? "https://mauk.club").toString();
+const canonical = new URL(Astro.url.pathname, Astro.site ?? "https://malayassociation.co.uk").toString();
 const pageTitle = title.includes("Malay Association UK")
   ? title
   : `${title} | Malay Association UK`;
+const structuredDataItems = Array.isArray(structuredData)
+  ? structuredData
+  : structuredData
+    ? [structuredData]
+    : [];
 ---
 
 <!doctype html>
@@ -33,19 +40,19 @@ const pageTitle = title.includes("Malay Association UK")
     <meta name="theme-color" content="#173629" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonical} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="alternate" type="application/rss+xml" title="Malay Association UK blog" href="/rss.xml" />
     <meta property="og:site_name" content="Malay Association UK" />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content={type} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL(image, Astro.site ?? "https://mauk.club").toString()} />
+    <meta property="og:image" content={new URL(image, Astro.site ?? "https://malayassociation.co.uk").toString()} />
     <meta name="twitter:card" content="summary_large_image" />
+    {structuredDataItems.map((item) => (
+      <script type="application/ld+json" set:html={JSON.stringify(item)} />
+    ))}
     <title>{pageTitle}</title>
-    <script is:inline>
-      const savedDesign = localStorage.getItem("mauk-design") || "heritage";
-      document.documentElement.dataset.design = savedDesign;
-    </script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -54,30 +61,7 @@ const pageTitle = title.includes("Malay Association UK")
       <slot />
     </main>
     <Footer />
-    <div class="design-debug-menu" data-design-debug aria-label="Design debug menu">
-      <span>Design</span>
-      <button type="button" data-design-option="heritage">Heritage</button>
-      <button type="button" data-design-option="care">Community Care</button>
-      <button type="button" data-design-option="current">Current</button>
-    </div>
     <script>
-      const designButtons = Array.from(document.querySelectorAll("[data-design-option]"));
-      const setDesign = (design) => {
-        document.documentElement.dataset.design = design;
-        localStorage.setItem("mauk-design", design);
-        designButtons.forEach((button) => {
-          button.setAttribute("aria-pressed", String(button.getAttribute("data-design-option") === design));
-        });
-      };
-
-      designButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          setDesign(button.getAttribute("data-design-option") || "heritage");
-        });
-      });
-
-      setDesign(document.documentElement.dataset.design || "heritage");
-
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const revealItems = Array.from(document.querySelectorAll("[data-reveal]"));
 

@@ -10,7 +10,7 @@ const escapeXml = (value: string) =>
     .replace(/'/g, "&apos;");
 
 export const GET: APIRoute = async ({ site }) => {
-  const baseUrl = site ?? new URL("https://mauk.club");
+  const baseUrl = site ?? new URL("https://malayassociation.co.uk");
   const posts = (await getCollection("posts"))
     .filter((post) => post.data.contentType !== "event")
     .sort((a, b) => b.data.publishedDate.valueOf() - a.data.publishedDate.valueOf());
