@@ -6,12 +6,12 @@
 	"scripts": {
 		"dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
 		"build": "ASTRO_TELEMETRY_DISABLED=1 astro build",
-		"preview": "npm run build && wrangler dev",
-		"deploy": "npm run build && wrangler deploy",
+		"preview": "npm run build && wrangler pages dev dist",
+		"deploy": "npm run build && wrangler pages deploy dist --project-name malay-association-uk",
 		"cf-typegen": "wrangler types"
 	},
 	"dependencies": {
-		"@astrojs/cloudflare": "11",
+		"@astrojs/cloudflare": "^11.2.0",
 		"@astrojs/sitemap": "3.2.1",
 		"@fontsource-variable/plus-jakarta-sans": "^5.2.8",
 		"astro": "^4.16.18"
