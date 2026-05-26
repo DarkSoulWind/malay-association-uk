@@ -1,0 +1,120 @@
+---
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PostCard from "@components/PostCard.astro";
+
+export async function getStaticPaths() {
+  const posts = (await getCollection("posts")).filter((entry) => entry.data.contentType === "event");
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post }
+  }));
+}
+
+interface Props {
+  post: CollectionEntry<"posts">;
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+const allPosts = await getCollection("posts");
+const relatedPosts = allPosts
+  .filter((entry) => entry.slug !== post.slug && entry.data.contentType === "event")
+  .sort((a, b) => (b.data.eventDate?.valueOf() ?? 0) - (a.data.eventDate?.valueOf() ?? 0))
+  .slice(0, 3);
+
+const dateFormatter = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "long",
+  year: "numeric"
+});
+
+const displayDate = post.data.eventDate ?? post.data.publishedDate;
+const dateLabel = dateFormatter.format(displayDate);
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={post.data.excerpt}
+  image={post.data.featuredImage}
+  type="article"
+>
+  <article class="article-shell">
+    <header class="article-header">
+      <div class="meta-row">
+        <span>Event listing</span>
+        <span>{post.data.category}</span>
+        <time datetime={displayDate.toISOString()}>{dateLabel}</time>
+      </div>
+      <h1>{post.data.title}</h1>
+      <p class="article-deck">{post.data.excerpt}</p>
+    </header>
+
+    <div class="article-image">
+      <img src={post.data.featuredImage} alt={post.data.imageAlt} />
+    </div>
+
+    <div class="article-grid">
+      <div class="prose">
+        <Content />
+      </div>
+
+      <aside class="article-sidebar" aria-label="Event details">
+        <section class="event-detail-box">
+          <h2>Event Details</h2>
+          <dl>
+            {post.data.eventDate && (
+              <div>
+                <dt>Date</dt>
+                <dd>{dateFormatter.format(post.data.eventDate)}</dd>
+              </div>
+            )}
+            {(post.data.eventStartTime || post.data.eventEndTime) && (
+              <div>
+                <dt>Time</dt>
+                <dd>{post.data.eventStartTime}{post.data.eventEndTime ? ` - ${post.data.eventEndTime}` : ""}</dd>
+              </div>
+            )}
+            {post.data.venue && (
+              <div>
+                <dt>Venue</dt>
+                <dd>{post.data.venue}</dd>
+              </div>
+            )}
+            {post.data.entryFee && (
+              <div>
+                <dt>Entry</dt>
+                <dd>{post.data.entryFee}</dd>
+              </div>
+            )}
+            <div>
+              <dt>Status</dt>
+              <dd>{post.data.isPastEvent ? "Past event" : "Upcoming"}</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="event-detail-box">
+          <h2>Content Type</h2>
+          <p>
+            This is an event listing. Post-event stories, thank-you notes and
+            community updates are kept in the blog archive.
+          </p>
+        </section>
+      </aside>
+    </div>
+  </article>
+
+  {relatedPosts.length > 0 && (
+    <section class="section" aria-labelledby="related-title">
+      <div class="section-heading">
+        <p class="eyebrow">More Events</p>
+        <h2 id="related-title">Other event listings</h2>
+      </div>
+      <div class="post-grid">
+        {relatedPosts.map((entry) => <PostCard post={entry} compact />)}
+      </div>
+    </section>
+  )}
+</BaseLayout>

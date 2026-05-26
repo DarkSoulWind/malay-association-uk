@@ -1,0 +1,32 @@
+---
+const navItems = [
+  { href: "/about", label: "About" },
+  { href: "/activities", label: "Activities" },
+  { href: "/events", label: "Events" },
+  { href: "/blog", label: "Blog" },
+  { href: "/contact", label: "Contact" }
+];
+
+const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isActive = (href: string) => {
+  return path === href || path.startsWith(`${href}/`);
+};
+---
+
+<header class="site-header">
+  <a class="brand" href="/" aria-label="Malay Association UK home">
+    <span class="brand-mark" aria-hidden="true">
+      <img src="/assets/malaysia-flag.png" alt="" />
+    </span>
+    <span class="brand-text">
+      <strong>Malay Association UK</strong>
+      <small>Registered Charity 1186880</small>
+    </span>
+  </a>
+
+  <nav class="site-nav" aria-label="Main navigation">
+    {navItems.map((item) => (
+      <a href={item.href} aria-current={isActive(item.href) ? "page" : undefined}>{item.label}</a>
+    ))}
+  </nav>
+</header>

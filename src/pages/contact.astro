@@ -1,0 +1,63 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Contact"
+  description="Contact MAUK to volunteer, offer a venue, support an event, ask a question or share a community need."
+  image="/assets/volunteers.jpg"
+>
+  <section class="page-hero">
+    <p class="eyebrow">Contact</p>
+    <h1>Got an idea, a venue, a question or time to help?</h1>
+    <p>
+      Send MAUK a message about events, volunteering, welfare support, donations,
+      venue leads or anything that helps bring the community together.
+    </p>
+  </section>
+
+  <section class="page-section content-grid">
+    <form class="contact-card" action="mailto:ukmalayclub@hotmail.com" method="post" enctype="text/plain">
+      <h2>Send MAUK a message</h2>
+      <div class="form-grid">
+        <div class="field">
+          <label for="name">Name</label>
+          <input id="name" name="name" autocomplete="name" required />
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required />
+        </div>
+        <div class="field full">
+          <label for="topic">Topic</label>
+          <select id="topic" name="topic">
+            <option>General enquiry</option>
+            <option>Volunteer support</option>
+            <option>Event or venue suggestion</option>
+            <option>Donation or fundraising</option>
+            <option>Community welfare</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" required></textarea>
+        </div>
+      </div>
+      <div class="button-row">
+        <button class="button primary" type="submit">Send Message</button>
+      </div>
+    </form>
+
+    <aside class="contact-card">
+      <h2>Direct links</h2>
+      <p>
+        Email and donation details should be confirmed with MAUK before launch.
+      </p>
+      <div class="button-row">
+        <a class="button ghost" href="mailto:ukmalayclub@hotmail.com">Email MAUK</a>
+        <a class="button ghost" href="https://www.instagram.com/malayassociation_uk/">Instagram</a>
+        <a class="button ghost" href="https://www.facebook.com/MalayClub-Uk-563146760820930/">Facebook</a>
+      </div>
+    </aside>
+  </section>
+</BaseLayout>

@@ -1,0 +1,39 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"posts">;
+  compact?: boolean;
+}
+
+const { post, compact = false } = Astro.props;
+const href = post.data.contentType === "event" ? `/events/${post.slug}/` : `/blog/${post.slug}/`;
+const typeLabel = {
+  event: "Event listing",
+  post: "Story",
+  notice: "Notice",
+  recap: "Recap"
+}[post.data.contentType];
+const date = post.data.eventDate ?? post.data.publishedDate;
+const dateLabel = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric"
+}).format(date);
+---
+
+<article class:list={["post-card", compact && "post-card-compact"]} data-category={post.data.category} data-reveal="bubble">
+  <a class="post-card-image" href={href} aria-label={`Read ${post.data.title}`}>
+    <img src={post.data.featuredImage} alt={post.data.imageAlt} loading="lazy" />
+  </a>
+  <div class="post-card-body">
+    <div class="meta-row">
+      <span>{typeLabel}</span>
+      <span>{post.data.category}</span>
+      <time datetime={date.toISOString()}>{dateLabel}</time>
+    </div>
+    <h2><a href={href}>{post.data.title}</a></h2>
+    <p>{post.data.excerpt}</p>
+    {post.data.venue && <p class="venue-line">{post.data.venue}</p>}
+  </div>
+</article>

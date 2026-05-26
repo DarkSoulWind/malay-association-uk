@@ -1,0 +1,73 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PostCard from "@components/PostCard.astro";
+
+const today = new Date();
+const eventPosts = (await getCollection("posts"))
+  .filter((post) => post.data.contentType === "event" && post.data.eventDate)
+  .sort((a, b) => (b.data.eventDate?.valueOf() ?? 0) - (a.data.eventDate?.valueOf() ?? 0));
+
+const upcomingEvents = eventPosts.filter((post) => {
+  const date = post.data.eventDate;
+  return Boolean(date && !post.data.isPastEvent && date >= today);
+});
+
+const pastEvents = eventPosts.filter((post) => !upcomingEvents.includes(post));
+---
+
+<BaseLayout
+  title="Events"
+  description="Find MAUK events, from Hari Raya gatherings and bazaars to workshops, picnics and community fundraisers."
+  image="/assets/community-event.jpg"
+>
+  <section class="page-hero">
+    <p class="eyebrow">Events</p>
+    <h1>Where the community gets together.</h1>
+    <p>
+      Hari Raya, bazaars, workshops, picnics and fundraisers all sit here as proper
+      event listings, with past gatherings kept as part of the MAUK archive.
+    </p>
+  </section>
+
+  <section class="page-section" aria-labelledby="upcoming-events">
+    <div class="section-heading wide">
+      <div>
+        <p class="eyebrow">Next Up</p>
+        <h2 id="upcoming-events">Upcoming Events</h2>
+      </div>
+      <p>
+        When a new activity is announced, it appears here first with the details
+        people actually need: date, venue, time and how to join.
+      </p>
+    </div>
+
+    {upcomingEvents.length > 0 ? (
+      <div class="event-grid">
+        {upcomingEvents.map((post) => <PostCard post={post} />)}
+      </div>
+    ) : (
+      <div class="empty-state">
+        <h2>No upcoming events listed yet.</h2>
+        <p>New MAUK activities can be added with dates, venues, times and joining details.</p>
+      </div>
+    )}
+  </section>
+
+  <section class="page-section" aria-labelledby="past-events">
+    <div class="section-heading wide">
+      <div>
+        <p class="eyebrow">Past Gatherings</p>
+        <h2 id="past-events">Past Events</h2>
+      </div>
+      <p>
+        These are the listings for past events. Recaps, photos, thank-you notes and
+        welfare updates live in the blog.
+      </p>
+    </div>
+
+    <div class="event-grid">
+      {pastEvents.map((post) => <PostCard post={post} compact />)}
+    </div>
+  </section>
+</BaseLayout>

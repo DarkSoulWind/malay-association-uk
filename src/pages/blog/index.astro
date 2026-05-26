@@ -1,0 +1,66 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PostCard from "@components/PostCard.astro";
+
+const posts = (await getCollection("posts"))
+  .filter((post) => post.data.contentType !== "event")
+  .sort((a, b) => b.data.publishedDate.valueOf() - a.data.publishedDate.valueOf());
+const categories = Array.from(new Set(posts.map((post) => post.data.category))).sort();
+---
+
+<BaseLayout
+  title="Blog"
+  description="Read MAUK stories, recaps, thank-you notes, welfare updates and community notices."
+  image="/assets/celebration.jpg"
+>
+  <section class="page-hero">
+    <p class="eyebrow">Stories</p>
+    <h1>The community archive, with a bit more heart.</h1>
+    <p>
+      Recaps, thank-you notes, welfare updates and community notices live here.
+      It is the place for what happened after the poster, the food and the photos.
+    </p>
+  </section>
+
+  <section class="page-section" aria-labelledby="blog-archive-title">
+    <div class="section-heading wide">
+      <div>
+        <p class="eyebrow">Browse</p>
+        <h2 id="blog-archive-title">Browse updates</h2>
+      </div>
+      <p>
+        Filter by fundraising, welfare work, remembrance notices, food, partnerships
+        and cultural learning.
+      </p>
+    </div>
+
+    <div class="blog-filter-panel" aria-label="Filter blog posts by category">
+      <button class="filter-button" type="button" data-filter="All" aria-pressed="true">All</button>
+      {categories.map((category) => (
+        <button class="filter-button" type="button" data-filter={category} aria-pressed="false">{category}</button>
+      ))}
+    </div>
+
+    <div class="post-grid" data-blog-grid>
+      {posts.map((post) => <PostCard post={post} />)}
+    </div>
+  </section>
+
+  <script>
+    const buttons = document.querySelectorAll("[data-filter]");
+    const cards = document.querySelectorAll("[data-category]");
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const filter = button.getAttribute("data-filter");
+
+        buttons.forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+        cards.forEach((card) => {
+          const shouldShow = filter === "All" || card.getAttribute("data-category") === filter;
+          card.toggleAttribute("hidden", !shouldShow);
+        });
+      });
+    });
+  </script>
+</BaseLayout>
