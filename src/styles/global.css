@@ -1700,6 +1700,38 @@ html[data-design="heritage"] .site-footer {
 		linear-gradient(135deg, #14281f, #203d2f);
 }
 
+.not-found {
+	display: grid;
+	align-items: center;
+	width: min(var(--max), calc(100% - 36px));
+	min-height: clamp(460px, 62vh, 680px);
+	margin: 0 auto;
+	padding: clamp(72px, 12vw, 140px) 0;
+}
+
+.not-found-copy {
+	max-width: 720px;
+	border-left: 4px solid var(--gold-500);
+	padding-left: clamp(22px, 4vw, 42px);
+}
+
+.not-found h1 {
+	margin: 0;
+	color: var(--green-950);
+	font-family: var(--font-display);
+	font-size: clamp(3.4rem, 12vw, 7rem);
+	font-weight: 760;
+	letter-spacing: -0.035em;
+	line-height: 0.96;
+}
+
+.not-found p:not(.eyebrow) {
+	max-width: 620px;
+	margin: 20px 0 0;
+	color: var(--muted);
+	font-size: clamp(1.05rem, 2vw, 1.24rem);
+}
+
 html[data-design="care"] {
 	--green-950: #12362d;
 	--green-900: #1f5b4b;
@@ -2414,11 +2446,13 @@ html[data-design="care"] .site-footer {
 	.heritage-hero,
 	.heritage-heading,
 	html[data-design="heritage"] .page-hero,
+	html[data-design="heritage"] .content-grid,
 	.heritage-about-hero,
 	.heritage-about-grid,
 	.heritage-about-timeline article,
 	.heritage-band,
 	.care-hero,
+	html[data-design="care"] .content-grid,
 	.care-about-hero,
 	.care-about-body,
 	.care-service-band,

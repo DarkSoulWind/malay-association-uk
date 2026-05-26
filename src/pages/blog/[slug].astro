@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import PostCard from "@components/PostCard.astro";
+import { breadcrumbJsonLd, organizationJsonLd } from "../../lib/seo";
 
 export async function getStaticPaths() {
   const posts = (await getCollection("posts")).filter((entry) => entry.data.contentType !== "event");
@@ -35,6 +36,7 @@ const dateLabel = dateFormatter.format(displayDate);
 const hasEventDetails = post.data.eventDate || post.data.venue || post.data.eventStartTime || post.data.entryFee;
 const siteUrl = (Astro.site ?? new URL("https://malayassociation.co.uk")).toString().replace(/\/$/, "");
 const pageUrl = `${siteUrl}${Astro.url.pathname}`;
+const organization = organizationJsonLd(siteUrl);
 const articleJsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
@@ -45,25 +47,25 @@ const articleJsonLd = {
   datePublished: post.data.publishedDate.toISOString(),
   dateModified: post.data.publishedDate.toISOString(),
   mainEntityOfPage: pageUrl,
-  author: {
-    "@type": "Organization",
-    name: "Malay Association UK",
-    url: `${siteUrl}/`
-  },
-  publisher: {
-    "@type": "Organization",
-    name: "Malay Association UK",
-    url: `${siteUrl}/`
-  }
+  author: organization,
+  publisher: organization
 };
+const breadcrumbJsonLdItem = breadcrumbJsonLd([
+  { name: "Home", url: `${siteUrl}/` },
+  { name: "Blog", url: `${siteUrl}/blog/` },
+  { name: post.data.title, url: pageUrl }
+]);
 ---
 
 <BaseLayout
   title={post.data.title}
   description={post.data.excerpt}
   image={post.data.featuredImage}
-  structuredData={articleJsonLd}
+  imageAlt={post.data.imageAlt}
+  structuredData={[articleJsonLd, breadcrumbJsonLdItem]}
   type="article"
+  publishedTime={post.data.publishedDate.toISOString()}
+  modifiedTime={post.data.publishedDate.toISOString()}
 >
   <article class="article-shell">
     <header class="article-header">

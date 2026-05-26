@@ -1,0 +1,26 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+Astro.response.status = 404;
+---
+
+<BaseLayout
+  title="Page Not Found | Malay Association UK"
+  description="The requested Malay Association UK page could not be found."
+  robots="noindex,follow"
+>
+  <section class="not-found" aria-labelledby="not-found-title">
+    <div class="not-found-copy" data-reveal="bubble">
+      <p class="eyebrow">404</p>
+      <h1 id="not-found-title">Page not found</h1>
+      <p>
+        The page may have moved, or the address may have been typed incorrectly.
+        Return to the MAUK homepage or browse the latest community updates.
+      </p>
+      <div class="button-row">
+        <a class="button primary" href="/">Go to homepage</a>
+        <a class="button ghost" href="/blog">Browse blog archive</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
