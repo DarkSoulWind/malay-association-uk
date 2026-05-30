@@ -1,0 +1,172 @@
+backend:
+  name: github
+  repo: DarkSoulWind/malay-association-uk
+  branch: main
+
+local_backend: true
+publish_mode: editorial_workflow
+
+site_url: https://malayassociation.co.uk
+display_url: https://malayassociation.co.uk
+logo_url: /assets/malaysia-flag.png
+
+media_folder: public/assets
+public_folder: /assets
+
+collections:
+  - name: posts
+    label: Posts and Events
+    label_singular: Post or Event
+    folder: src/content/posts
+    create: true
+    delete: true
+    format: frontmatter
+    extension: md
+    slug: "{{slug}}"
+    identifier_field: title
+    summary: "{{title}} - {{contentType}} - {{publishedDate}}"
+    sortable_fields:
+      - title
+      - publishedDate
+      - eventDate
+      - category
+      - contentType
+    view_groups:
+      - label: Content Type
+        field: contentType
+      - label: Category
+        field: category
+      - label: Sensitivity
+        field: sensitivity
+    view_filters:
+      - label: Event listings
+        field: contentType
+        pattern: "event"
+      - label: Blog archive
+        field: contentType
+        pattern: "post|notice|recap"
+      - label: Upcoming events
+        field: isPastEvent
+        pattern: "false"
+    fields:
+      - label: Title
+        name: title
+        widget: string
+      - label: Published date
+        name: publishedDate
+        widget: datetime
+        format: "YYYY-MM-DD"
+        date_format: "DD/MM/YYYY"
+        time_format: false
+        picker_utc: true
+      - label: Event date
+        name: eventDate
+        widget: datetime
+        format: "YYYY-MM-DD"
+        date_format: "DD/MM/YYYY"
+        time_format: false
+        picker_utc: true
+        required: false
+        hint: Required for event listings. Optional for ordinary blog posts.
+      - label: Category
+        name: category
+        widget: select
+        options:
+          - Events
+          - Community Support
+          - Fundraising
+          - Announcements
+          - Cultural Education
+          - Food & Cuisine
+          - Remembrance
+          - Partnerships
+      - label: Content type
+        name: contentType
+        widget: select
+        default: post
+        hint: Use "event" for the Events page. Use "post", "notice", or "recap" for the Blog page.
+        options:
+          - label: Event listing
+            value: event
+          - label: Blog post
+            value: post
+          - label: Notice
+            value: notice
+          - label: Recap
+            value: recap
+      - label: Excerpt
+        name: excerpt
+        widget: text
+        hint: Short summary shown on listing cards and used for SEO descriptions.
+      - label: Featured image
+        name: featuredImage
+        widget: image
+        choose_url: false
+      - label: Image alt text
+        name: imageAlt
+        widget: string
+      - label: Instagram post URL
+        name: instagramUrl
+        widget: string
+        required: false
+        hint: Optional. Paste the public Instagram post or reel URL to show it as the main media on the detail page.
+      - label: Instagram post URLs
+        name: instagramUrls
+        widget: list
+        required: false
+        hint: Optional. Use this when a post has multiple public Instagram posts or reels.
+        field:
+          label: Instagram URL
+          name: url
+          widget: string
+      - label: Venue
+        name: venue
+        widget: string
+        required: false
+      - label: Event start time
+        name: eventStartTime
+        widget: string
+        required: false
+        hint: Use 24-hour time such as 14:30 when confirmed, or leave blank.
+      - label: Event end time
+        name: eventEndTime
+        widget: string
+        required: false
+        hint: Use 24-hour time such as 17:00 when confirmed, or leave blank.
+      - label: Entry fee
+        name: entryFee
+        widget: string
+        required: false
+      - label: Past event
+        name: isPastEvent
+        widget: boolean
+        default: true
+        hint: Turn this off for a future event that should appear in Upcoming Events.
+      - label: Sensitivity
+        name: sensitivity
+        widget: select
+        default: standard
+        options:
+          - label: Standard
+            value: standard
+          - label: Welfare
+            value: welfare
+          - label: Remembrance
+            value: remembrance
+      - label: Tags
+        name: tags
+        widget: list
+        required: false
+        field:
+          label: Tag
+          name: tag
+          widget: string
+      - label: Source path
+        name: sourcePath
+        widget: string
+        required: false
+        hint: Optional archive/source reference for migrated content.
+      - label: Body
+        name: body
+        widget: markdown
+        required: false

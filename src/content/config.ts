@@ -25,6 +25,8 @@ const posts = defineCollection({
     excerpt: z.string(),
     featuredImage: z.string(),
     imageAlt: z.string(),
+    instagramUrl: z.string().optional(),
+    instagramUrls: z.array(z.string()).default([]),
     venue: z.string().optional(),
     eventStartTime: z.string().optional(),
     eventEndTime: z.string().optional(),

@@ -6,8 +6,11 @@ eventDate: "2022-07-01"
 category: "Food & Cuisine"
 contentType: "event"
 excerpt: "A MAUK open potluck bringing members together through home-cooked food and shared hospitality."
-featuredImage: "/assets/potluck-hall.jpg"
-imageAlt: "Tables arranged with food for a community potluck"
+featuredImage: "/assets/blog/open-potluck.jpg"
+imageAlt: "Original media from the MAUK food and cuisine post: Open Potluck"
+instagramUrls:
+  - "https://www.instagram.com/p/Cd5LWsGNy0n/"
+  - "https://www.instagram.com/p/Cd5LxbAN-3y/"
 venue: "To be verified with MAUK"
 isPastEvent: true
 sensitivity: "standard"

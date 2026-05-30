@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import BaseLayout from "@layouts/BaseLayout.astro";
+import InstagramEmbed from "@components/InstagramEmbed.astro";
 import PostCard from "@components/PostCard.astro";
 import { breadcrumbJsonLd, organizationJsonLd } from "../../lib/seo";
 
@@ -33,6 +34,11 @@ const dateFormatter = new Intl.DateTimeFormat("en-GB", {
 
 const displayDate = post.data.eventDate ?? post.data.publishedDate;
 const dateLabel = dateFormatter.format(displayDate);
+const instagramUrls = post.data.instagramUrls.length > 0
+  ? post.data.instagramUrls
+  : post.data.instagramUrl
+    ? [post.data.instagramUrl]
+    : [];
 const siteUrl = (Astro.site ?? new URL("https://malayassociation.co.uk")).toString().replace(/\/$/, "");
 const pageUrl = `${siteUrl}${Astro.url.pathname}`;
 const organization = organizationJsonLd(siteUrl);
@@ -103,9 +109,16 @@ const breadcrumbJsonLdItem = breadcrumbJsonLd([
       <p class="article-deck">{post.data.excerpt}</p>
     </header>
 
-    <div class="article-image">
-      <img src={post.data.featuredImage} alt={post.data.imageAlt} />
-    </div>
+    {instagramUrls.length > 0 ? (
+      <div class="instagram-embed-list">
+        {instagramUrls.map((url) => <InstagramEmbed url={url} />)}
+      </div>
+    ) : (
+      <div class="article-image">
+        <img src={post.data.featuredImage} alt={post.data.imageAlt} />
+      </div>
+    )}
+    {instagramUrls.length > 0 && <script is:inline async src="https://www.instagram.com/embed.js"></script>}
 
     <div class="article-grid">
       <div class="prose">

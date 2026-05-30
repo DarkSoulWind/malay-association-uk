@@ -7,7 +7,11 @@ const alias = (path) => fileURLToPath(new URL(path, import.meta.url));
 export default defineConfig({
 	site: "https://malayassociation.co.uk",
 	output: "static",
-	integrations: [sitemap()],
+	integrations: [
+		sitemap({
+			filter: (page) => !page.endsWith("/admin/"),
+		}),
+	],
 	vite: {
 		resolve: {
 			alias: {
